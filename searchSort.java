@@ -372,5 +372,191 @@ public class searchSort {
     }
 
     //lc 4 optimised
+    // O(log(n + m))
+    public double findMedianSortedArrays_opti(int[] nums1, int[] nums2) {
+        if(nums1.length == 0 && nums2.length == 0) {
+            return (double)0;
+        }
+        else if(nums1.length == 0 || nums2.length == 0) {
+            return (nums1.length == 0) ? (nums2.length % 2 == 0 ? (double)(nums2[nums2.length / 2] + nums2[nums2.length / 2 - 1]) / 2 : nums2[nums2.length / 2]) : (nums1.length % 2 == 0 ? (double)(nums1[nums1.length / 2] + nums1[nums1.length / 2 - 1]) / 2 : nums1[nums1.length / 2]);
+        }
+        
+        if(nums1.length > nums2.length) {
+            int[] temp = nums1;
+            nums1 = nums2;
+            nums2 = temp;
+        }
+        
+        int n1 = nums1.length;
+        int n2 = nums2.length;
+        int lo = 0;
+        int hi = n1;
+        int l = n1 + n2;
+        
+        while(lo <= hi) {
+            int mid = lo + (hi - lo) / 2;
+            int bl = (l + 1)/ 2 - mid;
+            
+            int mm1 = (mid == 0) ? -(int)1e7 : nums1[mid - 1];
+            int m = (mid == n1) ? (int)1e7 : nums1[mid];
+            int bm1 = (bl == 0) ? -(int)1e7 : nums2[bl - 1];
+            int b = (bl == n2) ? (int)1e7 : nums2[bl];
+            
+            if(mm1 <= b && bm1 <= m) {
+                int lmax = Math.max(mm1, bm1);
+                int rmin = Math.min(m, b);
+                if(l % 2 != 0) {
+                    return (double)lmax;
+                } else if(l % 2 == 0){
+                    return (double)(lmax + rmin) / 2;
+                }
+            } else if(bm1 > m) {
+                lo = mid + 1;
+            } else if(b < mm1) {
+                hi = mid - 1;
+            }
+        }
+        return (double)0;
+    }
+
+    // https://practice.geeksforgeeks.org/problems/chocolate-distribution-problem3825/1
+    public long findMinDiff (ArrayList<Long> A, long n, long m)
+    {
+        Collections.sort(A);
+        int lo = 0;
+        int hi = (int)(m - 1);
+        
+        long min = (long)(1e9 + 7);  
+        while(hi < n) {
+            min = Math.min(min, A.get(hi) - A.get(lo));
+            lo++;
+            hi++;
+        }
+        
+        return min;
+    }
+
+    //lc 410 : refer to allocate min no of pages
+    public boolean isPossible(int[] nums, int mid, int m) {
+        int sa = 1;
+        int n = nums.length;
+        int sum = 0;
+        for(int i = 0; i < n; i++) {
+            sum += nums[i];
+            
+            if(sum > mid) {
+                sa++;
+                sum = nums[i];
+            }
+        }
+        return sa <= m;
+    }
+    
+    public int splitArray(int[] nums, int m) {
+        int sum = 0;
+        int max = 0;
+        for(int ele : nums) {
+            sum += ele;
+            max = Math.max(max, ele);
+        }
+        int lo = max;
+        int hi = sum;
+        
+        int ans = 0;
+        while(lo <= hi) {
+            int mid = lo + (hi - lo) / 2;
+            if(isPossible(nums, mid, m)) {
+                ans = mid;
+                hi = mid - 1;
+            } else {
+                lo = mid + 1;
+            }
+        }
+        
+        return ans;
+    }
+
+
+    //lc 1011
+    public boolean isPossible1(int[] weights, int mid, int days) {
+        int sa = 1;
+        int sum = 0;
+        int n = weights.length;
+        for(int i = 0; i < n; i++) {
+            sum += weights[i];
+            
+            if(sum > mid) {
+                sa++;
+                sum = weights[i];
+            }
+        }
+        
+        return sa <= days;
+    }
+    
+    public int shipWithinDays(int[] weights, int days) {
+        int max = 0;
+        int sum = 0;
+        for(int ele : weights) {
+            sum += ele;
+            max = Math.max(ele, max);
+        }
+        
+        int lo = max;
+        int hi = sum;
+        int ans = 0;
+        while(lo <= hi) {
+            int mid = lo + (hi - lo) / 2;
+            if(isPossible1(weights, mid, days)) {
+                ans = mid;
+                hi = mid - 1;
+            } else lo = mid + 1;
+        }
+        return ans;
+    }
+
+    // https://practice.geeksforgeeks.org/problems/count-the-triplets4615/1#
+    int countTriplet(int arr[], int n) {
+        Arrays.sort(arr);
+        int count = 0;
+        
+        int idx = arr.length - 1;
+        while(idx >= 0) {
+            int lo = 0;
+            int hi = idx - 1;
+            while(hi >= 0 && lo < idx && lo < hi) {
+                if(arr[lo] + arr[hi] == arr[idx]) {
+                    count++;
+                    lo++;
+                    hi--;
+                } else if(arr[lo] + arr[hi] < arr[idx])
+                    lo++;
+                else hi--;        
+            }
+            idx--;
+        }
+        
+        return count;
+    }
+
+    // https://practice.geeksforgeeks.org/problems/count-possible-triangles-1587115620/1
+    static int findNumberOfTriangles(int arr[], int n)
+    {
+        Arrays.sort(arr);
+        int idx = arr.length - 1;
+        int count = 0;
+        while(idx >= 0) {
+            int hi = idx - 1;
+            int lo = 0;
+            while(hi >= 0 && lo < n && lo < hi) {
+                if(arr[lo] + arr[hi] > arr[idx]) {
+                    count += hi - lo;
+                    hi--;
+                } else lo++;
+            }
+            idx--;
+        }
+        return count;
+    }
 
 }
