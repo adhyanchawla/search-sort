@@ -559,4 +559,53 @@ public class searchSort {
         return count;
     }
 
+    // https://practice.geeksforgeeks.org/problems/counting-elements-in-two-arrays/1#
+    public static ArrayList<Integer> countEleLessThanOrEqual(int arr1[], int arr2[], int m, int n)
+    {
+       // add your code here
+       ArrayList<Integer> ans = new ArrayList<>();
+      // Arrays.sort(arr1);
+       Arrays.sort(arr2);
+       
+       int idx = 0;
+       
+       while(idx < m) {
+           int lo = 0;
+           int hi = n - 1;
+           while(lo <= hi) {
+               int mid = lo + (hi - lo) / 2;
+               if(arr2[mid] <= arr1[idx]) {
+                   lo = mid + 1;
+               } else hi = mid - 1;
+           }
+           ans.add(lo);
+           idx++;
+       }
+       return ans;
+    }
+
+    // https://practice.geeksforgeeks.org/problems/counts-zeros-xor-pairs0349/1#
+    public static long calculate (int arr[], int n) {
+        //Complete the function
+        long count = 0;
+        HashMap<Integer, Long> map = new HashMap<>();
+        
+        for(int ele : arr) {
+            if(!map.containsKey(ele)) {
+                map.put(ele, (long)1);
+            } else {
+                map.put(ele, map.get(ele) + 1);
+            }
+        }
+        
+        for(int ele : map.keySet()) {
+            if(map.get(ele) > 1) {
+                long num = map.get(ele);
+                count += ((num) * (num - 1)) / 2;
+            }
+        }
+        
+        return count;
+    }
+
 }
